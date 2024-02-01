@@ -28,7 +28,7 @@ const AddBalanceWidget = ({user, onAddBalance}) => {
           style={styles.textInput}
           onChangeText={txt => {
             const filteredText = txt.replace(/[^0-9]/g, '');
-            setAmount(parseInt(filteredText, 10));
+            setAmount(filteredText ? parseInt(filteredText, 10) : filteredText);
           }}
         />
         <TouchableOpacity

@@ -4,43 +4,10 @@ import {Dropdown} from 'react-native-element-dropdown';
 import styles from './UserList.styles';
 import UserDetail from './UserDetails';
 import Title from './Title';
+import data from './Contants/dummy.json';
 
 const UserList = () => {
-  const [userData, setUserData] = useState([
-    {
-      value: 1,
-      label: 'jane',
-      walletBalance: 0,
-      lastAddedAmount: 0,
-      walletData: [],
-    },
-    {
-      value: 2,
-      label: 'John',
-      walletBalance: 40,
-      lastAddedAmount: 40,
-      walletData: [
-        {
-          date: new Date(),
-          amount: 40,
-        },
-      ],
-    },
-    {
-      value: 3,
-      label: 'Virat',
-      walletBalance: 0,
-      lastAddedAmount: 0,
-      walletData: [],
-    },
-    {
-      value: 4,
-      label: 'Alex',
-      walletBalance: 0,
-      lastAddedAmount: 0,
-      walletData: [],
-    },
-  ]);
+  const [userData, setUserData] = useState(data);
   const [currentUser, setCurrentUser] = useState(null);
 
   // To get index of current user in array

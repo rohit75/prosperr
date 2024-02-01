@@ -1,0 +1,32 @@
+[
+    {
+      "value": 1,
+      "label": "jane",
+      "walletBalance": 0,
+      "walletData": []
+    },
+    {
+      "value": 2,
+      "label": "John",
+      "walletBalance": 40,
+      "lastAddedAmount": 40,
+      "walletData": [
+        {
+          "date": new Date(),
+          "amount": 40
+        }
+      ]
+    },
+    {
+      "value": 3,
+      "label": "Virat",
+      "walletBalance": 0,
+      "walletData": []
+    },
+    {
+      "value": 4,
+      "label": "Alex",
+      "walletBalance": 0,
+      "walletData": []
+    }
+  ]
