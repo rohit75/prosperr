@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {View} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import styles from './UserList.styles';
+import UserDetail from './UserDetails';
+import Title from './Title';
 
 const UserList = () => {
   const [userData, setUserData] = useState([
@@ -9,12 +11,14 @@ const UserList = () => {
       value: 1,
       label: 'jane',
       walletBalance: 0,
+      lastAddedAmount: 0,
       walletData: [],
     },
     {
       value: 2,
       label: 'John',
       walletBalance: 40,
+      lastAddedAmount: 40,
       walletData: [
         {
           date: new Date(),
@@ -26,118 +30,48 @@ const UserList = () => {
       value: 3,
       label: 'Virat',
       walletBalance: 0,
+      lastAddedAmount: 0,
       walletData: [],
     },
     {
       value: 4,
       label: 'Alex',
       walletBalance: 0,
+      lastAddedAmount: 0,
       walletData: [],
     },
   ]);
   const [currentUser, setCurrentUser] = useState(null);
-  const [value, setValue] = useState('');
-  const [bal, setBal] = useState('');
-  const [err, setError] = useState('');
+
+  // To get index of current user in array
+  const getIndex = (arr, user) => {
+    return arr.findIndex(item => item.label === user.label);
+  };
 
   useEffect(() => {
-    if (value !== '') {
-      const tempArr = userData;
-      const index = tempArr.findIndex(item => item.label === currentUser.label);
+    if (currentUser) {
+      const index = getIndex(userData, currentUser);
       setCurrentUser(userData[index]);
     }
-  }, [userData, currentUser, value]);
+  }, [userData, currentUser]);
 
-  const onAddBalance = user => {
-    setBal('');
-    if (!bal) {
-      setError('Please Enter Amount');
-      return;
-    }
-    setError('');
+  // To add new transaction in walletData
+  function onAddBalance(user, amt) {
     const tempArr = userData;
-    const index = tempArr.findIndex(item => item.label === currentUser.label);
-    const newAmount = user.walletBalance + bal;
+    const index = getIndex(tempArr, currentUser);
+
     tempArr[index].walletData.push({
       date: new Date(),
-      amount: bal,
+      amount: amt,
     });
-    tempArr[index].walletBalance = newAmount;
+    tempArr[index].walletBalance = user.walletBalance + amt;
+    tempArr[index].lastAddedAmount = amt;
     setUserData([...tempArr]);
-  };
-
-  const addBalance = user => {
-    return (
-      <>
-        <View style={styles.addBalanceView}>
-          <TextInput
-            value={bal.toString()}
-            placeholder="Amount"
-            keyboardType="number-pad"
-            style={styles.textInput}
-            onChangeText={txt => {
-              setBal(parseInt(txt, 10));
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => {
-              onAddBalance(user);
-            }}
-            style={styles.btnContainer}>
-            <Text style={styles.btnText}>Add Balance</Text>
-          </TouchableOpacity>
-        </View>
-        {err && <Text>{err}</Text>}
-      </>
-    );
-  };
-
-  const listofTransaction = () => {
-    return (
-      <>
-        {currentUser.walletData.map((ele, i) => {
-          return (
-            <View key={i} style={styles.itemView}>
-              <Text style={styles.leftValue}>Amount: {ele.amount}</Text>
-              <Text style={styles.rightValue}>
-                {new Date(ele.date).toLocaleString()}
-              </Text>
-            </View>
-          );
-        })}
-      </>
-    );
-  };
-
-  const renderUserdetail = () => {
-    return (
-      <>
-        {currentUser && currentUser.walletData.length ? (
-          <>
-            <View style={styles.detailsView}>
-              <Text style={styles.nameStyle}>
-                User Name: {currentUser.label}
-              </Text>
-              <Text style={styles.balanceStyle}>
-                Total Balance: {currentUser.walletBalance}
-              </Text>
-            </View>
-            {addBalance(currentUser)}
-            <Text style={styles.listTitle}>Transaction List</Text>
-            {listofTransaction()}
-          </>
-        ) : (
-          <View>
-            <Text style={styles.listTitle}> No Transaction History </Text>
-            {addBalance(currentUser)}
-          </View>
-        )}
-      </>
-    );
-  };
+  }
 
   return (
     <View style={styles.padding10}>
+      <Title text={'Select User'} />
       <Dropdown
         data={userData}
         search
@@ -146,14 +80,15 @@ const UserList = () => {
         valueField="value"
         placeholder="Select item"
         searchPlaceholder="Search..."
-        value={value}
+        value={currentUser}
+        selectedTextStyle={styles.leftValue}
         onChange={item => {
-          setValue(item);
-          console.log('called', item);
           setCurrentUser(item);
         }}
       />
-      {value !== '' && renderUserdetail()}
+      {currentUser && (
+        <UserDetail onAddBalance={onAddBalance} currentUser={currentUser} />
+      )}
     </View>
   );
 };
